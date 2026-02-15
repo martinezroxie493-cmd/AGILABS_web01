@@ -1,2 +1,26 @@
-# AGILABS_web01
-Official website for the AI Research Institute
+# Companion Cloud Demo（在线语音/视频陪聊）
+
+这是一个可直接部署的静态演示版 APP，包含：
+
+- 语音/视频陪聊模式切换
+- 推荐陪聊师列表与预约动作
+- 会话控制（麦克风、摄像头、降噪）
+- 状态提示与需求记录区域
+- 专业化响应式 UI（深色玻璃拟态）
+
+## 本地运行（无需安装依赖）
+
+```bash
+python3 -m http.server 8080
+# 浏览器访问 http://127.0.0.1:8080
+```
+
+## 部署演示
+
+该项目是纯静态站点，可直接部署到：
+
+- GitHub Pages
+- Netlify
+- Vercel
+
+部署时将仓库根目录作为发布目录即可（无需构建步骤）。

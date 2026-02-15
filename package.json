@@ -1,1 +1,11 @@
-{\n  "name": "agilabs-web01",\n  "version": "0.1.0",\n  "private": true,\n  "scripts": {\n    "dev": "vite",\n    "build": "vite build",\n    "preview": "vite preview",\n    "lint": "eslint --ext .js,.vue src"\n  },\n  "dependencies": {\n    "vue": "^3.3.4",\n    "vue-router": "^4.2.4",\n    "axios": "^1.4.0"\n  },\n  "devDependencies": {\n    "@vitejs/plugin-vue": "^4.2.4",\n    "vite": "^4.4.5",\n    "typescript": "^5.1.6",\n    "@vue/compiler-sfc": "^3.3.4",\n    "sass": "^1.64.1",\n    "autoprefixer": "^10.4.14",\n    "postcss": "^8.4.27"\n  }\n}
+{
+  "name": "agilabs-web01",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Companion Cloud static demo",
+  "scripts": {
+    "dev": "python3 -m http.server 8080",
+    "start": "python3 -m http.server 8080",
+    "check": "python3 -c \"import pathlib; pathlib.Path('index.html').read_text(); print('index.html readable')\""
+  }
+}
