@@ -1,12 +1,240 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index Page</title>
-</head>
-<body>
-    <h1>Welcome to AGILABS Web!</h1>
-    <p>The current date and time is: 2026-02-09 08:29:05 UTC</p>
-</body>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Companion Cloud - 在线语音/视频陪聊演示</title>
+    <style>
+      :root {
+        --bg: #020617;
+        --panel: rgba(15, 23, 42, 0.75);
+        --line: rgba(148, 163, 184, 0.24);
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --brand: linear-gradient(135deg, #22d3ee, #6366f1);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, PingFang SC, Microsoft YaHei, sans-serif;
+        background: radial-gradient(circle at top, #312e81 0%, #0f172a 45%, var(--bg) 100%);
+        color: var(--text);
+      }
+
+      .app {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      .hero {
+        display: flex;
+        gap: 24px;
+        justify-content: space-between;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border: 1px solid rgba(125, 211, 252, 0.5);
+        border-radius: 999px;
+        background: rgba(14, 165, 233, 0.2);
+        font-size: 13px;
+      }
+
+      h1 { margin: 12px 0; font-size: 42px; }
+      .subtitle { color: #cbd5e1; line-height: 1.6; max-width: 680px; }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(100px, 1fr));
+        gap: 10px;
+      }
+
+      .panel,
+      .stats article {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        backdrop-filter: blur(8px);
+      }
+
+      .stats article { padding: 14px; text-align: center; }
+      .stats strong { display: block; font-size: 24px; }
+      .stats span { color: var(--muted); font-size: 13px; }
+
+      .panel { padding: 18px; margin-top: 16px; }
+
+      .actions { display: flex; gap: 12px; }
+      button {
+        border: 1px solid #334155;
+        background: #1e293b;
+        color: var(--text);
+        border-radius: 12px;
+        padding: 10px 16px;
+        cursor: pointer;
+      }
+
+      button.active,
+      button.primary {
+        background: var(--brand);
+        border: none;
+        color: #fff;
+      }
+
+      .grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; }
+      .list { display: grid; gap: 12px; }
+      .card {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 12px;
+        align-items: center;
+        background: rgba(51, 65, 85, 0.45);
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      .avatar {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: rgba(15, 23, 42, 0.95);
+        font-size: 24px;
+      }
+
+      .muted { color: #93c5fd; font-size: 13px; }
+      .switches { display: flex; flex-wrap: wrap; gap: 14px; }
+
+      textarea {
+        margin-top: 12px;
+        width: 100%;
+        min-height: 90px;
+        border-radius: 12px;
+        border: 1px solid #334155;
+        background: rgba(15, 23, 42, 0.8);
+        color: #f8fafc;
+        padding: 10px;
+      }
+
+      .status { color: #67e8f9; }
+      ul { line-height: 1.8; }
+      .footer { color: var(--muted); text-align: center; margin: 24px 0 8px; font-size: 13px; }
+
+      @media (max-width: 900px) {
+        .hero, .grid { grid-template-columns: 1fr; display: grid; }
+        h1 { font-size: 32px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="hero">
+        <div>
+          <div class="badge">Companion Cloud · 在线语音 / 视频陪聊</div>
+          <h1>专业级在线陪聊 APP 演示站</h1>
+          <p class="subtitle">支持实时语音陪聊、在线视频陪聊、智能匹配、日程预约、礼物互动。该页面为可直接部署的静态演示版本，后续可无缝接入 WebRTC / IM / 支付网关。</p>
+        </div>
+        <div class="stats">
+          <article><strong>24/7</strong><span>在线服务</span></article>
+          <article><strong>2000+</strong><span>认证陪聊师</span></article>
+          <article><strong>&lt; 3s</strong><span>极速匹配</span></article>
+        </div>
+      </header>
+
+      <section class="panel actions">
+        <button id="voiceBtn" class="active">🎙️ 语音陪聊</button>
+        <button id="videoBtn">📹 视频陪聊</button>
+        <button id="startBtn" class="primary">立即开始</button>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <h2>推荐陪聊师</h2>
+          <div class="list" id="companionList"></div>
+        </article>
+        <article class="panel">
+          <h2>会话控制台</h2>
+          <p>当前模式：<strong id="modeText">语音陪聊</strong></p>
+          <div class="switches">
+            <label><input id="mic" type="checkbox" checked /> 麦克风</label>
+            <label><input id="camera" type="checkbox" /> 摄像头</label>
+            <label><input id="noise" type="checkbox" checked /> 降噪</label>
+          </div>
+          <textarea id="notes" placeholder="记录需求：例如想找英语口语陪练，30分钟..."></textarea>
+          <p id="status" class="status">待匹配：请选择语音或视频模式并点击“立即开始”。</p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <h2>核心能力</h2>
+        <ul>
+          <li>✅ 语音/视频模式切换与即时状态同步</li>
+          <li>✅ 推荐陪聊师展示、在线状态与预约动作</li>
+          <li>✅ 会话设备控制（麦克风、摄像头、降噪）</li>
+          <li>✅ 响应式专业界面，适配移动端</li>
+          <li>✅ 支持静态托管部署（GitHub Pages / Netlify / Vercel）</li>
+        </ul>
+      </section>
+
+      <p class="footer">Companion Cloud Demo · Static Deploy Ready</p>
+    </div>
+
+    <script>
+      const companions = [
+        { id: 1, avatar: '🧠', name: '林语', tags: ['情绪陪伴', '深夜倾听'], rating: '4.9', online: true },
+        { id: 2, avatar: '🌍', name: 'Mia', tags: ['英语口语', '海外生活'], rating: '4.8', online: true },
+        { id: 3, avatar: '🎮', name: '阿泽', tags: ['游戏开黑', '轻松聊天'], rating: '4.7', online: false }
+      ]
+
+      let mode = 'voice'
+      const modeText = document.getElementById('modeText')
+      const statusEl = document.getElementById('status')
+      const voiceBtn = document.getElementById('voiceBtn')
+      const videoBtn = document.getElementById('videoBtn')
+      const startBtn = document.getElementById('startBtn')
+      const companionList = document.getElementById('companionList')
+
+      function renderCompanions() {
+        companionList.innerHTML = companions.map(item => `
+          <div class="card">
+            <div class="avatar">${item.avatar}</div>
+            <div>
+              <strong>${item.name}</strong>
+              <p>${item.tags.join(' · ')}</p>
+              <span class="muted">评分 ${item.rating} ｜ ${item.online ? '在线' : '忙碌'}</span>
+            </div>
+            <button ${!item.online ? 'disabled' : ''} data-id="${item.id}">${item.online ? '预约' : '离线'}</button>
+          </div>
+        `).join('')
+
+        companionList.querySelectorAll('button[data-id]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const target = companions.find(c => c.id === Number(btn.dataset.id))
+            statusEl.textContent = `已提交与 ${target.name} 的${mode === 'voice' ? '语音陪聊' : '视频陪聊'}预约请求。`
+          })
+        })
+      }
+
+      function setMode(next) {
+        mode = next
+        const isVoice = mode === 'voice'
+        modeText.textContent = isVoice ? '语音陪聊' : '视频陪聊'
+        voiceBtn.classList.toggle('active', isVoice)
+        videoBtn.classList.toggle('active', !isVoice)
+      }
+
+      voiceBtn.addEventListener('click', () => setMode('voice'))
+      videoBtn.addEventListener('click', () => setMode('video'))
+      startBtn.addEventListener('click', () => {
+        const mic = document.getElementById('mic').checked
+        const camera = document.getElementById('camera').checked
+        statusEl.textContent = `正在为你匹配${mode === 'voice' ? '语音陪聊' : '视频陪聊'}顾问，请稍候（已开启：${mic ? '麦克风' : '静音'}${camera ? ' + 摄像头' : ''}）。`
+      })
+
+      renderCompanions()
+    </script>
+  </body>
 </html>
